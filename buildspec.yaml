@@ -1,0 +1,20 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - 'yum update -y'
+      - 'yum install -y httpd'
+  build:
+    commands:
+      - echo "Installing Apache modules..."
+      - 'yum install -y mod_rewrite mod_ssl'
+      - echo "Copying sample web page..."
+      - 'cp /usr/share/httpd/docs/index.html /var/www/html/index.html'
+      - echo "Starting Apache service..." 
+      - 'systemctl start httpd'
+      - 'systemctl enable httpd'
+  post_build:
+    commands:
+      - 'docker build -t my-apache-image .'
+      - 'docker tag my-apache-image:latest 61276104751.dkr.ecr.us-east-1.amazonaws.com/dockerimage:latest'
+      - 'docker push 861276104751.dkr.ecr.us-east-1.amazonaws.com/dockerimage:latest' 
